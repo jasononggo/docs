@@ -15,15 +15,32 @@ Reference:
 - https://github.com/ssllabs/research/wiki/SSL-and-TLS-Deployment-Best-Practices
 - https://ssllabs.com/ssltest to get the analysis report of the TLS configuration.
 
-## Docker Best Practice
-- Use non-root user with sudo privileges
+## Server Best Practice
+- Use non-root user with sudo privileges and OpenSSH
 ```
 useradd [user]
 passwd [user]
 # Add [user] to the wheel group (sudo privileges)
 gpasswd -a [user] wheel
+
+# Login as the non-root user
+su [user]
+# Save the public key
+mkdir ~/.ssh/
+nano ~/.ssh/authorized_keys
+# Change the folder and the file access permissions.
+# chmod 700 = Only owner can read, write and execute.
+# chmod 600 = Only owner can read and execute.
+# Reference: https://www.thinkplexx.com/learn/article/unix/command/chmod-permissions-flags-explained-600-0600-700-777-100-etc
+chmod 700 ~/.ssh/
+chmod 600 ~/.ssh/authorized_keys
 ```
 
+- Disable Root Login
+```
+sudo sed -i '/^PermitRootLogin/s/yes/no/' /etc/ssh/sshd_config
+sudo systemctl reload sshd
+```
 
 - Set the timezone to UTC
 ```
@@ -32,21 +49,26 @@ sudo timedatectl set-timezone UTC
 sudo timedatectl set-local-rtc 0
 # Restart the Rsyslog's service
 sudo systemctl restart rsyslog
+```
 
+## Install Docker Engine and Docker Compose in Centos 8
 
-# Install Docker Engine --nobest (3:18.09.1-3.el7) in CentOS 8 
-Reference: https://docs.docker.com/engine/release-notes/
-Reference: https://linuxconfig.org/how-to-install-docker-in-rhel-8
+### Install Docker Engine --nobest (3:18.09.1-3.el7) in CentOS 8 
+Reference:
+- https://docs.docker.com/engine/release-notes/
+- https://linuxconfig.org/how-to-install-docker-in-rhel-8
+```
 sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
 sudo dnf list docker-ce
 sudo dnf install docker-ce --nobest -y
 sudo systemctl start docker
 # Start Docker Engine at boot.
 sudo systemctl enable docker
+```
 
-
-# Install Docker Compose 1.25.5
+### Install Docker Compose 1.25.5
 Reference: https://docs.docker.com/compose/release-notes/
+```
 sudo dnf install curl -y
 sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose

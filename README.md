@@ -18,37 +18,43 @@ Reference:
 ## Server Best Practices
 - Use non-root user with sudo privileges and SSH
 ```
-useradd [user]
-passwd [user]
+$ useradd [user]
+$ passwd [user]
 # Add [user] to the wheel group (sudo privileges)
-gpasswd -a [user] wheel
+$ gpasswd -a [user] wheel
 
 # Login as the non-root user
-su [user]
+$ su [user]
+
+
 # Save the public key
-mkdir ~/.ssh/
-nano ~/.ssh/authorized_keys
+$ mkdir ~/.ssh/
+$ nano ~/.ssh/authorized_keys
+
+
 # Change the folder and the file access permissions.
 # chmod 700 = Only owner can read, write and execute.
 # chmod 600 = Only owner can read and execute.
 # Reference: https://www.thinkplexx.com/learn/article/unix/command/chmod-permissions-flags-explained-600-0600-700-777-100-etc
-chmod 700 ~/.ssh/
-chmod 600 ~/.ssh/authorized_keys
+$ chmod 700 ~/.ssh/
+$ chmod 600 ~/.ssh/authorized_keys
 ```
 
 - Disable Root Login
 ```
-sudo sed -i '/^PermitRootLogin/s/yes/no/' /etc/ssh/sshd_config
-sudo systemctl reload sshd
+$ sudo sed -i '/^PermitRootLogin/s/yes/no/' /etc/ssh/sshd_config
+$ sudo systemctl reload sshd
 ```
 
 - Set the timezone to UTC
 ```
 # Set the timezone to UTC
-sudo timedatectl set-timezone UTC
-sudo timedatectl set-local-rtc 0
+$ sudo timedatectl set-timezone UTC
+$ sudo timedatectl set-local-rtc 0
+
+
 # Restart the Rsyslog's service
-sudo systemctl restart rsyslog
+$ sudo systemctl restart rsyslog
 ```
 
 ## PWA best practice: tips for designing great Progressive Web Apps

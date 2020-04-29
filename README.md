@@ -15,8 +15,8 @@ Reference:
 - https://github.com/ssllabs/research/wiki/SSL-and-TLS-Deployment-Best-Practices
 - https://ssllabs.com/ssltest to get the analysis report of the TLS configuration.
 
-## Server Best Practice
-- Use non-root user with sudo privileges and OpenSSH
+## Server Best Practices
+- Use non-root user with sudo privileges and SSH
 ```
 useradd [user]
 passwd [user]

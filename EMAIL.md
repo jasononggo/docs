@@ -32,8 +32,8 @@ v=DMARC1; p=reject; pct=100; rua=mailto:dmarc@companydomain.com
 
 ### Testing
 
-Relay email from @companydomain.com to a test email of @gmail.com (Google), @outlook.com (Microsoft), @rocketmail.com (Yahoo).
-Check the raw message of the each relayed email received by @gmail.com, @outlook.com, @rocketmail.com, make sure to find `dmarc=pass`
+Relay email from companydomain.com to a test email using gmail.com `Google`, outlook.com `Microsoft`, rocketmail.com `Yahoo`.
+Check the raw message of the each relayed email received by gmail.com, outlook.com, rocketmail.com, and make sure to find `dmarc=pass` in the raw message.
 
 ```
 ...

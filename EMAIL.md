@@ -67,3 +67,5 @@ Business-wise, you should not use SMTP server to forward the email. Do note, mos
 2. Use SMTP relay service with the sender rewriting scheme to relay the email and end up with for example `FROM: sender@gmail.com via companydomain.com`
 
 > The sender rewriting scheme provides for recovering the original envelope address, so that if a bounce does arrive, it can be forwarded along the reverse path—with an empty envelope sender this time. While there are other workarounds, SRS is a fairly general one.
+
+Do note, if you use G Suite SMTP relay service and relay email from domain you do not own (such as yahoo.com), In the Allowed senders section, select the users who are allowed to send messages through the SMTP relay service: Any addresses (not recommended). If you did not, your user with @companydomain.com email will not receive the relayed email except @companydomain.com / G Suite SMTP relay service will not relay the email.

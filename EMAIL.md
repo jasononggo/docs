@@ -53,7 +53,17 @@ Before your domain enforces MTA-STS encryption and authentication, set your poli
 
 **MTA-STS**
 
-Like all mail providers, Gmail uses Simple Mail Transfer Protocol (SMTP) to send and receive messages. SMTP alone does not provide security, and many SMTP servers don’t have added security to prevent malicious attacks.
+Like all mail providers, Gmail uses Simple Mail Transfer Protocol (SMTP) to send and receive messages. SMTP alone does not provide security, and **many SMTP servers don’t have added security to prevent malicious attacks**. Thus being said, you should analyze the TLS reporting before taking decision.
 
-Do note, **if you communicate with Chinese company who use @companydomain.com** instead of @gmail.com or else, it is recommended not to set up MTA-STS to **avoid email from not getting through**.
-Chinese company are not accustomed to use email and it is likely they self-host the SMTP server and unknowingly does not comply with MTA-STS.
+# Set up SMTP relay service with the Sender Rewriting Scheme
+
+Reference: [SMTP Relay: Route outgoing non-Gmail message through Google[(https://support.google.com/a/answer/2956491?hl=en)
+
+From the technical point of view, you have 2 options to automate forwarding email:
+1. Use SMTP server to forward the email and end up with for example `FROM: catchall@companydomain.com` header on every forwaded email
+
+Business-wise, you should not use SMTP server to forward the email. Do note, most of non-technical user rely on `FROM:` header to identify who send the email and possibly query the email for future use. For example, automated forwading email with `FROM: catchall@companydomain.com` would prove harder to query mail sent by a specific individual.
+
+2. Use SMTP relay service with the sender rewriting scheme to relay the email and end up with for example `FROM: sender@gmail.com via companydomain.com`
+
+> The sender rewriting scheme provides for recovering the original envelope address, so that if a bounce does arrive, it can be forwarded along the reverse path—with an empty envelope sender this time. While there are other workarounds, SRS is a fairly general one.

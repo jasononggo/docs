@@ -46,6 +46,14 @@ $ sudo sed -i '/^PermitRootLogin/s/yes/no/' /etc/ssh/sshd_config
 $ sudo systemctl reload sshd
 ```
 
+- Disable Password Based Login
+```
+$ sudo sed -i '/^ChallengeResponseAuthentication/s/yes/no/' /etc/ssh/sshd_config
+$ sudo sed -i '/^PasswordAuthentication/s/yes/no/' /etc/ssh/sshd_config
+$ sudo sed -i '/^UsePAM/s/yes/no/' /etc/ssh/sshd_config
+$ sudo systemctl reload sshd
+```
+
 - Set the timezone to UTC
 ```
 # Set the timezone to UTC

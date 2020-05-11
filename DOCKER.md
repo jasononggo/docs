@@ -23,3 +23,21 @@ $ sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docke
 $ sudo chmod +x /usr/local/bin/docker-compose
 $ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 ```
+
+### Disable CentOS's firewalld service
+
+Keywords:
+- fix docker no route to host
+- fix docker ACME challenge failed
+
+Reference:
+- https://www.digitalocean.com/community/tutorials/how-to-migrate-from-firewalld-to-iptables-on-centos-7
+- https://www.tecmint.com/start-stop-disable-enable-firewalld-iptables-firewall/
+
+Most distributions use the `iptables` firewall, which uses the `netfilter` hooks to enforce firewall rules. CentOS 7 comes with an alternative service called `firewalld` which fulfills this same purpose.
+
+```
+$ sudo systemctl stop firewalld
+$ sudo systemctl disable firewalld
+$ sudo systemctl mask firewalld
+```

@@ -41,3 +41,23 @@ $ sudo systemctl stop firewalld
 $ sudo systemctl disable firewalld
 $ sudo systemctl mask firewalld
 ```
+
+fix [issue #2719](https://github.com/fail2ban/fail2ban/issues/2719) with `$ sudo yum install iptables-services`
+
+```
+fail2ban-input    | 2020-05-11 23:25:15,825 fail2ban.actions        [1]: NOTICE  [sshd] Ban 195.231.4.203
+fail2ban-input    | 2020-05-11 23:25:15,836 fail2ban.utils          [1]: ERROR   7fb207b63240 -- exec: iptables -w -N f2b-sshd
+fail2ban-input    | iptables -w -A f2b-sshd -j RETURN
+fail2ban-input    | iptables -w -I INPUT -p tcp -m multiport --dports ssh -j f2b-sshd
+fail2ban-input    | 2020-05-11 23:25:15,836 fail2ban.utils          [1]: ERROR   7fb207b63240 -- stderr: 'modprobe: FATAL: Module ip_tables not found in directory /lib/modules/4.18.0-147.5.1.el8_1.x86_64'
+fail2ban-input    | 2020-05-11 23:25:15,836 fail2ban.utils          [1]: ERROR   7fb207b63240 -- stderr: "iptables v1.8.3 (legacy): can't initialize iptables table `filter': Table does not exist (do you need to insmod?)"
+fail2ban-input    | 2020-05-11 23:25:15,836 fail2ban.utils          [1]: ERROR   7fb207b63240 -- stderr: 'Perhaps iptables or your kernel needs to be upgraded.'
+fail2ban-input    | 2020-05-11 23:25:15,836 fail2ban.utils          [1]: ERROR   7fb207b63240 -- stderr: 'modprobe: FATAL: Module ip_tables not found in directory /lib/modules/4.18.0-147.5.1.el8_1.x86_64'
+fail2ban-input    | 2020-05-11 23:25:15,836 fail2ban.utils          [1]: ERROR   7fb207b63240 -- stderr: "iptables v1.8.3 (legacy): can't initialize iptables table `filter': Table does not exist (do you need to insmod?)"
+fail2ban-input    | 2020-05-11 23:25:15,836 fail2ban.utils          [1]: ERROR   7fb207b63240 -- stderr: 'Perhaps iptables or your kernel needs to be upgraded.'
+fail2ban-input    | 2020-05-11 23:25:15,836 fail2ban.utils          [1]: ERROR   7fb207b63240 -- stderr: 'modprobe: FATAL: Module ip_tables not found in directory /lib/modules/4.18.0-147.5.1.el8_1.x86_64'
+fail2ban-input    | 2020-05-11 23:25:15,836 fail2ban.utils          [1]: ERROR   7fb207b63240 -- stderr: "iptables v1.8.3 (legacy): can't initialize iptables table `filter': Table does not exist (do you need to insmod?)"
+fail2ban-input    | 2020-05-11 23:25:15,836 fail2ban.utils          [1]: ERROR   7fb207b63240 -- stderr: 'Perhaps iptables or your kernel needs to be upgraded.'
+fail2ban-input    | 2020-05-11 23:25:15,836 fail2ban.utils          [1]: ERROR   7fb207b63240 -- returned 3
+fail2ban-input    | 2020-05-11 23:25:15,837 fail2ban.actions        [1]: ERROR   Failed to execute ban jail 'sshd' action 'iptables-multiport' info 'ActionInfo({'ip': '195.231.4.203', 'family': 'inet4', 'fid': <function Actions.ActionInfo.<lambda> at 0x7fb20793cdc0>, 'raw-ticket': <function Actions.ActionInfo.<lambda> at 0x7fb20793d4c0>})': Error starting action Jail('sshd')/iptables-multiport: 'Script error'
+```

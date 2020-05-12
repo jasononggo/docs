@@ -1,3 +1,9 @@
+# Getting Started
+
+[Email Blacklist Check](https://mxtoolbox.com/blacklists.aspx)
+
+Check your server IP address before set up a mail server
+
 # Enhance email security
 
 ## Set up SPF records to prevent email spoofing.

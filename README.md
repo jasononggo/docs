@@ -16,11 +16,6 @@ Reference:
 - https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
 - https://gist.github.com/PurpleBooth/b24679402957c63ec426 for details on our code of conduct, and the process for submitting pull requests to us.
 
-## SSL and TLS Deployment Best Practices
-Reference:
-- https://github.com/ssllabs/research/wiki/SSL-and-TLS-Deployment-Best-Practices
-- https://ssllabs.com/ssltest to get the analysis report of the TLS configuration.
-
 ## Server Best Practices
 - Use non-root user with sudo privileges and SSH
 ```
@@ -70,6 +65,22 @@ $ sudo timedatectl set-local-rtc 0
 # Restart the Rsyslog's service
 $ sudo systemctl restart rsyslog
 ```
+
+## NGINX Best Practices
+Reference: https://docs.sucuri.net/warnings/hardening/
+
+- Disable Server Banners by adding this code to the `/etc/nginx/nginx.conf` file
+
+```
+http {
+         server_tokens off;
+}
+```
+
+## SSL and TLS Deployment Best Practices
+Reference:
+- https://github.com/ssllabs/research/wiki/SSL-and-TLS-Deployment-Best-Practices
+- https://ssllabs.com/ssltest to get the analysis report of the TLS configuration.
 
 ## PWA best practice: tips for designing great Progressive Web Apps
 Reference:

@@ -1,8 +1,9 @@
 ## Index
 
-- [Docker and CentOS's firewalld service fix](DOCKER.md)
+- [Docker and CentOS's firewalld service fix](DOCKER.md#docker-and-centoss-firewalld-service-fix)
 - [Enhance Email Security](EMAIL.md)
 - [Prevent running process from randomly die](SWAP.md)
+- [Web Server Best Practices](WEBSERVER.md)
 
 ## How To Write Proper Git Commit Message
 Reference:
@@ -16,27 +17,41 @@ Reference:
 - https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
 - https://gist.github.com/PurpleBooth/b24679402957c63ec426 for details on our code of conduct, and the process for submitting pull requests to us.
 
+## "Premature Optimization" and paranoid security measures
+
+Reference: ["Premature Optimization" and paranoid security measures](https://stackoverflow.com/questions/12543607/prevent-session-cookie-hijacking-without-ssl/12545243#12545243)
+
+> From my experience and from what I have read, I agree with the statement that "premature optimization is [one of the greatest evils of programming]". Focus your time on building a site that works and is useful for people and then, if something start to go wrong, think about getting an SSL certificate. You just don't have the money for the certificate and you don't have the money because your site has not yet been successful (so do that first).
+
+> "Premature Optimization" and paranoid security measures are temptations for programmers because we like to think of ourselves as working on large-scale, very important projects when we are not [yet].
+
 ## Server Best Practices
 - Use non-root user with sudo privileges and SSH
 ```
 $ useradd [user]
 $ passwd [user]
+
+
 # Add [user] to the wheel group (sudo privileges)
+# ---
 $ gpasswd -a [user] wheel
 
+
 # Login as the non-root user
+# ---
 $ su [user]
 
 
 # Save the public key
+# ---
 $ mkdir ~/.ssh/
 $ nano ~/.ssh/authorized_keys
-
 
 # Change the folder and the file access permissions.
 # chmod 700 = Only owner can read, write and execute.
 # chmod 600 = Only owner can read and execute.
 # Reference: https://www.thinkplexx.com/learn/article/unix/command/chmod-permissions-flags-explained-600-0600-700-777-100-etc
+# ---
 $ chmod 700 ~/.ssh/
 $ chmod 600 ~/.ssh/authorized_keys
 ```
@@ -58,35 +73,12 @@ $ sudo systemctl reload sshd
 - Set the timezone to UTC
 ```
 # Set the timezone to UTC
+# ---
 $ sudo timedatectl set-timezone UTC
 $ sudo timedatectl set-local-rtc 0
 
 
 # Restart the Rsyslog's service
+# ---
 $ sudo systemctl restart rsyslog
 ```
-
-## NGINX Best Practices
-Reference: https://docs.sucuri.net/warnings/hardening/
-
-- Disable Server Banners by adding this code to the `/etc/nginx/nginx.conf` file
-
-```
-http {
-         server_tokens off;
-}
-```
-
-## SSL and TLS Deployment Best Practices
-Reference:
-- https://github.com/ssllabs/research/wiki/SSL-and-TLS-Deployment-Best-Practices
-- https://ssllabs.com/ssltest to get the analysis report of the TLS configuration.
-
-## PWA best practice: tips for designing great Progressive Web Apps
-Reference:
-- https://medium.com/progressivewebapps/pwa-best-practices-tips-for-designing-great-progressive-web-apps-96e92298d2ec
-- https://chrome.google.com/webstore/detail/lighthouse/blipmdconlkpinefehnmjammfjpmpbjk?hl=en to get the analysis report of the web performance.
-
-> Perceived Performance must be Seamless.
-> Show placeholder and shadow first
-> Make opacity transition.

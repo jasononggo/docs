@@ -1,6 +1,7 @@
 ## Index
 
-- [Docker and CentOS's firewalld service fix](DOCKER.md#docker-and-centoss-firewalld-service-fix)
+- [Docker and CentOS's firewalld service fix](DOCKER.md#centoss-firewalld-service-fix)
+- [(optional) Docker and SELinux](DOCKER.md#optional-enable-selinux)
 - [Enhance Email Security](EMAIL.md)
 - [Prevent running process from randomly die](SWAP.md)
 - [Web Server Best Practices](WEBSERVER.md)

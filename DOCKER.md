@@ -6,7 +6,6 @@ Reference:
 - https://linuxconfig.org/how-to-install-docker-in-rhel-8
 ```
 $ sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
-$ dnf list docker-ce
 $ sudo dnf install docker-ce --nobest -y
 $ sudo systemctl start docker
 

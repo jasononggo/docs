@@ -24,7 +24,7 @@ $ sudo chmod +x /usr/local/bin/docker-compose
 $ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 ```
 
-### Docker and CentOS's firewalld service fix
+## CentOS's firewalld service fix
 
 Reference:
 - https://www.digitalocean.com/community/tutorials/how-to-migrate-from-firewalld-to-iptables-on-centos-7
@@ -43,3 +43,47 @@ $ sudo systemctl disable firewalld
 $ sudo systemctl mask firewalld
 $ sudo yum install iptables-services
 ```
+
+## (optional) Enable SELinux
+
+Reference: - https://www.alibabacloud.com/blog/selinux-usage-in-alibaba-cloud-ecs_594556
+
+- Replace `SELINUX=disabled` to `SELINUX=enforcing` in the `/etc/selinux/config` file
+
+- Tell SELinux to relabel all of the files on that system with the correct SELinux contexts **on the next boot**. On large disks, this process can take a good amount of time.
+
+```
+$ touch ./autorelabel
+$ shutdown -r now
+```
+
+- Once logged in, Verify that SELinux is activated
+
+```
+$ getenforce
+$ sestatus
+```
+
+### (optional) Fix for issue "docker container can write to the host's root directory"
+
+Reference: - https://dev.to/mkdev/hardening-docker-with-selinux-on-centos-8-4d6e
+
+By default, Docker disable SELinux. To fix this, add this code to the `/etc/docker/daemon.json` file and run `$ systemctl restart docker`
+
+```
+{
+  "selinux-enabled": true
+}
+```
+
+#### Fix for issue "docker container can not read into the host's root directory"
+
+Reference:
+- https://www.projectatomic.io/blog/2015/06/using-volumes-with-docker-can-cause-problems-with-selinux/
+- https://danwalsh.livejournal.com/74095.html
+- [Mounted volume is incorrectly labeled](https://www.projectatomic.io/blog/2016/07/docker-selinux-flag/)
+- [What is the difference between the `z` and the `Z` flag in the docker volumes options?](https://stackoverflow.com/questions/35218194/what-is-z-flag-in-docker-containers-volumes-from-option)
+
+Use the `z` and `Z` flag to the mounted volume instead of `ro` or `rw` flag.
+
+> The z option indicates that the bind mount content is shared among multiple containers. The Z option indicates that the bind mount content is private and unshared. **This affects the file or directory on the host machine itself and can have consequences outside of the scope of Docker**.

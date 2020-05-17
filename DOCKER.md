@@ -1,3 +1,5 @@
+# Docker Engine
+
 ## Install Docker Engine and Docker Compose in Centos 8
 
 ### Install Docker Engine --nobest (3:18.09.1-3.el7) in CentOS 8 
@@ -11,6 +13,7 @@ $ sudo systemctl start docker
 
 
 # Start Docker Engine at boot.
+# ---
 $ sudo systemctl enable docker
 ```
 
@@ -40,7 +43,15 @@ Usage:
 $ sudo systemctl stop firewalld
 $ sudo systemctl disable firewalld
 $ sudo systemctl mask firewalld
+
 $ sudo yum install iptables-services
+$ sudo systemctl start iptables
+
+
+# Start iptables at boot
+$ sudo systemctl enable iptables
+
+$ sudo systemctl restart docker
 ```
 
 ## (optional) Enable SELinux
@@ -86,3 +97,61 @@ Reference:
 Use the `z` and `Z` flag to the mounted volume instead of `ro` or `rw` flag.
 
 > The z option indicates that the bind mount content is shared among multiple containers. The Z option indicates that the bind mount content is private and unshared. **This affects the file or directory on the host machine itself and can have consequences outside of the scope of Docker**.
+
+# Docker Swarm
+
+## Disable firewalld and enable iptables
+
+Reference: 
+- https://www.digitalocean.com/community/tutorials/how-to-configure-the-linux-firewall-for-docker-swarm-on-centos-7
+- https://gist.github.com/BretFisher/7233b7ecf14bc49eb47715bbeb2a2769
+
+### Steps
+
+- Enable iptables on each node
+
+```
+$ sudo systemctl stop firewalld
+$ sudo systemctl disable firewalld
+$ sudo systemctl mask firewalld
+$ sudo yum install iptables.services
+$ sudo systemctl start iptables
+$ sudo systemctl enable iptables
+```
+
+- (caution) This first set of commands should be executed on the nodes that will serve as **Swarm managers**.
+
+```
+# Inbound to Swarm Managers
+# ---
+$ sudo iptables -I INPUT 6 -p tcp --dport 2377 -j ACCEPT
+$ sudo iptables -I INPUT 7 -p tcp --dport 7946 -j ACCEPT
+$ sudo iptables -I INPUT 8 -p udp --dport 7946 -j ACCEPT
+$ sudo iptables -I INPUT 9 -p udp --dport 4789 -j ACCEPT
+
+# Those rules are runtime rules and will be lost if the system is rebooted.
+# To save the current runtime rules to a file so that they persist after a reboot, type:
+# ---
+$ sudo /usr/libexec/iptables/iptables.init save
+
+$ systemctl restart docker
+```
+
+- (caution) This first set of commands should be executed on the nodes that will serve as **Swarm workers**.
+
+```
+# Inbound to Swarm workers
+# ---
+$ sudo iptables -I INPUT 6 -p tcp --dport 7946 -j ACCEPT
+$ sudo iptables -I INPUT 7 -p udp --dport 7946 -j ACCEPT
+$ sudo iptables -I INPUT 8 -p udp --dport 4789 -j ACCEPT
+
+$ sudo /usr/libexec/iptables/iptables.init save
+$ sudo systemctl restart docker
+```
+
+- (optional) If you need to access the Docker daemon remotely, you need to enable the `tcp` Socket, use port `2376` for encrypted communication with the daemon.
+
+```
+$ sudo iptables -I INPUT 5 -p tcp --dport 2376 -j ACCEPT
+```

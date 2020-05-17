@@ -124,10 +124,10 @@ $ sudo systemctl enable iptables
 ```
 # Inbound to Swarm Managers
 # ---
-$ sudo iptables -I INPUT 6 -p tcp --dport 2377 -j ACCEPT
-$ sudo iptables -I INPUT 7 -p tcp --dport 7946 -j ACCEPT
-$ sudo iptables -I INPUT 8 -p udp --dport 7946 -j ACCEPT
-$ sudo iptables -I INPUT 9 -p udp --dport 4789 -j ACCEPT
+$ sudo iptables -I INPUT 5 -p tcp --dport 2377 -j ACCEPT
+$ sudo iptables -I INPUT 6 -p tcp --dport 7946 -j ACCEPT
+$ sudo iptables -I INPUT 7 -p udp --dport 7946 -j ACCEPT
+$ sudo iptables -I INPUT 8 -p udp --dport 4789 -j ACCEPT
 
 # Those rules are runtime rules and will be lost if the system is rebooted.
 # To save the current runtime rules to a file so that they persist after a reboot, type:
@@ -142,9 +142,9 @@ $ systemctl restart docker
 ```
 # Inbound to Swarm workers
 # ---
-$ sudo iptables -I INPUT 6 -p tcp --dport 7946 -j ACCEPT
-$ sudo iptables -I INPUT 7 -p udp --dport 7946 -j ACCEPT
-$ sudo iptables -I INPUT 8 -p udp --dport 4789 -j ACCEPT
+$ sudo iptables -I INPUT 5 -p tcp --dport 7946 -j ACCEPT
+$ sudo iptables -I INPUT 6 -p udp --dport 7946 -j ACCEPT
+$ sudo iptables -I INPUT 7 -p udp --dport 4789 -j ACCEPT
 
 $ sudo /usr/libexec/iptables/iptables.init save
 $ sudo systemctl restart docker

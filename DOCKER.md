@@ -63,6 +63,7 @@ Reference: - https://www.alibabacloud.com/blog/selinux-usage-in-alibaba-cloud-ec
 - Tell SELinux to relabel all of the files on that system with the correct SELinux contexts **on the next boot**. On large disks, this process can take a good amount of time.
 
 ```
+$ su root
 $ touch ./autorelabel
 $ shutdown -r now
 ```

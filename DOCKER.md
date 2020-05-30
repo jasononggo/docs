@@ -114,7 +114,7 @@ Reference:
 $ sudo systemctl stop firewalld
 $ sudo systemctl disable firewalld
 $ sudo systemctl mask firewalld
-$ sudo yum install iptables.services
+$ sudo yum install iptables-services
 $ sudo systemctl start iptables
 $ sudo systemctl enable iptables
 ```

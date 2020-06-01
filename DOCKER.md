@@ -47,7 +47,44 @@ $ getenforce
 $ sestatus
 ```
 
+## Where to find SELinux permissions denials details
 
+Reference: [Where to find SELinux permissions denials details](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Where_to_find_SELinux_permission_denial_details)
+
+### Having problems with a service, check if SELinux is the culprit.
+
+- Make sure everything works without SELinux, if confirmed, continue.
+
+``
+# Set SELinux to permissive mode
+$ setenforce 0
+
+# After the test, set SELinux back to enforcing mode.
+$ setenforce 1
+``
+
+- Search for the `AVC` logs
+
+```
+# recent = 10 minutes ago
+$ ausearch -m AVC -ts recent | today
+```
+
+- Search for hidden denials
+
+```
+$ sesearch -dontaudit
+
+# disable `dontaudit` statements and rebuilds the SELinux policy. dev build only.
+$ semodule -DB
+
+# rebuilds the SELinux policy and enable `dontaudit` statement after deploying the services.
+$ semodule -B
+```
+
+### Audit the `/var/log/audit/audit.log` with a dedicated security personnel.
+
+You should not trust third party docker image, even the ones with open source repository.
 
 ## (optional) Fix for issue "docker container can write to the host's root directory"
 

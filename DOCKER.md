@@ -64,7 +64,7 @@ Reference: - https://www.alibabacloud.com/blog/selinux-usage-in-alibaba-cloud-ec
 
 ```
 $ su root
-$ touch ./autorelabel
+$ touch /.autorelabel
 $ shutdown -r now
 ```
 

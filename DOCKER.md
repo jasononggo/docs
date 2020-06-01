@@ -26,35 +26,7 @@ $ sudo chmod +x /usr/local/bin/docker-compose
 $ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 ```
 
-## CentOS's firewalld service fix
-
-Reference:
-- https://www.digitalocean.com/community/tutorials/how-to-migrate-from-firewalld-to-iptables-on-centos-7
-- https://www.tecmint.com/start-stop-disable-enable-firewalld-iptables-firewall/
-
-Most distributions use the `iptables` firewall, which uses the `netfilter` hooks to enforce firewall rules. CentOS 7 comes with an alternative service called `firewalld` which fulfills this same purpose.
-
-Usage:
-- fix docker no route to host
-- fix docker ACME challenge failed
-- fix [issue #2719](https://github.com/fail2ban/fail2ban/issues/2719) with `$ sudo yum install iptables-services`
-
-```
-$ sudo systemctl stop firewalld
-$ sudo systemctl disable firewalld
-$ sudo systemctl mask firewalld
-
-$ sudo yum install iptables-services
-$ sudo systemctl start iptables
-
-
-# Start iptables at boot
-$ sudo systemctl enable iptables
-
-$ sudo systemctl restart docker
-```
-
-## (optional) Enable SELinux
+# (optional) Enable SELinux
 
 Reference: - https://www.alibabacloud.com/blog/selinux-usage-in-alibaba-cloud-ecs_594556
 
@@ -75,7 +47,9 @@ $ getenforce
 $ sestatus
 ```
 
-### (optional) Fix for issue "docker container can write to the host's root directory"
+
+
+## (optional) Fix for issue "docker container can write to the host's root directory"
 
 Reference: - https://dev.to/mkdev/hardening-docker-with-selinux-on-centos-8-4d6e
 
@@ -87,7 +61,7 @@ By default, Docker disable SELinux. To fix this, add this code to the `/etc/dock
 }
 ```
 
-#### Fix for issue "docker container can not read into the host's root directory"
+## Fix for issue "docker container can not read into the host's root directory"
 
 Reference:
 - https://www.projectatomic.io/blog/2015/06/using-volumes-with-docker-can-cause-problems-with-selinux/
@@ -98,6 +72,68 @@ Reference:
 Use the `z` and `Z` flag to the mounted volume instead of `ro` or `rw` flag.
 
 > The z option indicates that the bind mount content is shared among multiple containers. The Z option indicates that the bind mount content is private and unshared. **This affects the file or directory on the host machine itself and can have consequences outside of the scope of Docker**.
+
+# CentOS's firewalld service fix
+
+Reference:
+- https://www.digitalocean.com/community/tutorials/how-to-migrate-from-firewalld-to-iptables-on-centos-7
+- https://www.tecmint.com/start-stop-disable-enable-firewalld-iptables-firewall/
+
+Most distributions use the `iptables` firewall, which uses the `netfilter` hooks to enforce firewall rules. CentOS 7 comes with an alternative service called `firewalld` which fulfills this same purpose.
+
+## fix docker no route to host and docker ACME challenge failed
+
+```
+$ sudo systemctl stop firewalld
+$ sudo systemctl disable firewalld
+$ sudo systemctl mask firewalld
+
+$ sudo yum install iptables-services
+$ sudo systemctl start iptables
+
+
+# Start iptables at boot
+$ sudo systemctl enable iptables
+
+$ sudo systemctl restart docker
+```
+
+## fix [issue #2719](https://github.com/fail2ban/fail2ban/issues/2719)
+
+```
+$ sudo yum install iptables-services
+```
+
+## fix [issue #41048](https://github.com/moby/moby/issues/41048)
+
+This issue happens if you run iptables in a container.
+
+- Error output
+
+```
+$ docker exec -ti proxy iptables -L
+modprobe: can't change directory to '/lib/modules': No such file or directory
+iptables v1.8.3 (legacy): can't initialize iptables table `filter': Table does not exist (do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
+```
+
+- Check if the modules is loaded by running this command `$ lsmod | grep ip`
+
+```
+ip_tables
+ip_conntrack
+iptable_filter
+ipt_state
+```
+
+- If not loaded, load the module by running this command `$ modprobe <module_name>`
+
+```
+modprobe ip_tables
+modprobe ip_conntrack
+modprobe iptable_filter
+modprobe ipt_state
+```
 
 # Docker Swarm
 

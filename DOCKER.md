@@ -106,6 +106,8 @@ $ sudo yum install iptables-services
 
 ## fix [issue #41048](https://github.com/moby/moby/issues/41048)
 
+Reference: https://www.linuxquestions.org/questions/linux-networking-3/iptables-v1-3-8-can%27t-initialize-iptables-table-%60filter%27-577212/
+
 This issue happens if you run iptables in a container.
 
 - Error output

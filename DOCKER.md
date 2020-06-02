@@ -63,17 +63,11 @@ $ setenforce 0
 $ setenforce 1
 ```
 
-- Search for the `AVC` logs
-
-```
-# recent = 10 minutes ago
-$ ausearch -m AVC -ts recent | today
-```
-
 - Search for hidden denials
 
 ```
-$ sesearch -dontaudit
+# (optional) search SELinux policy dontaudit statements
+$ sesearch --dontaudit
 
 # disable `dontaudit` statements and rebuilds the SELinux policy. dev build only.
 $ semodule -DB
@@ -82,13 +76,20 @@ $ semodule -DB
 $ semodule -B
 ```
 
+- Search for the `AVC` logs
+
+```
+# recent = 10 minutes ago
+$ ausearch -m AVC -ts recent | today
+```
+
 ### Audit the `/var/log/audit/audit.log` with a dedicated security personnel.
 
 You should not trust third party docker image, even the ones with open source repository.
 
 ## (optional) Fix for issue "docker container can write to the host's root directory"
 
-Reference: - https://dev.to/mkdev/hardening-docker-with-selinux-on-centos-8-4d6e
+Reference: https://dev.to/mkdev/hardening-docker-with-selinux-on-centos-8-4d6e
 
 By default, Docker disable SELinux. To fix this, add this code to the `/etc/docker/daemon.json` file and run `$ systemctl restart docker`
 

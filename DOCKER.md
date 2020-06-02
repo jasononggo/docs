@@ -1,11 +1,11 @@
 # Docker Engine
 
-## Install Docker Engine and Docker Compose in Centos 8
+## Install Docker Engine --nobest (3:18.09.1-3.el7) in CentOS 8
 
-### Install Docker Engine --nobest (3:18.09.1-3.el7) in CentOS 8 
 Reference:
 - https://docs.docker.com/engine/release-notes/
 - https://linuxconfig.org/how-to-install-docker-in-rhel-8
+
 ```
 $ sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
 $ sudo dnf install docker-ce --nobest -y
@@ -17,7 +17,8 @@ $ sudo systemctl start docker
 $ sudo systemctl enable docker
 ```
 
-### Install Docker Compose 1.25.5
+## Install Docker Compose 1.25.5
+
 Reference: https://docs.docker.com/compose/release-notes/
 ```
 $ sudo dnf install curl -y
@@ -157,7 +158,7 @@ iptables v1.8.3 (legacy): can't initialize iptables table `filter': Table does n
 Perhaps iptables or your kernel needs to be upgraded.
 ```
 
-- Check if the modules is loaded by running this command `$ lsmod | grep ip`
+- Check if the modules is loaded by running this command `$ lsmod | grep ip` in the host machine.
 
 ```
 ip_tables
@@ -166,7 +167,7 @@ iptable_filter
 ipt_state
 ```
 
-- If not loaded, load the module by running this command `$ modprobe <module_name>`
+- If not loaded, load the module by running this command `$ modprobe <module_name>` in the host machine.
 
 ```
 modprobe ip_tables

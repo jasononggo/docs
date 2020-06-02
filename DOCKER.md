@@ -48,13 +48,11 @@ $ getenforce
 $ sestatus
 ```
 
-## Where to find SELinux permissions denials details
+## (general) Fix container did not work properly.
 
 Reference: [Where to find SELinux permissions denials details](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Where_to_find_SELinux_permission_denial_details)
 
-### Having problems with a service, check if SELinux is the culprit.
-
-- Make sure everything works without SELinux, if confirmed, continue.
+- Disable SELinux to confirm whether SELinux is the culprit.
 
 ```
 # Set SELinux to permissive mode
@@ -84,7 +82,11 @@ $ semodule -B
 $ ausearch -m AVC -ts recent | today
 ```
 
-### Audit the `/var/log/audit/audit.log` with a dedicated security personnel.
+- [Use `audit2allow` to allow access.](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/security-enhanced_linux/sect-security-enhanced_linux-fixing_problems-allowing_access_audit2allow)
+
+## SELinux Best Practices
+
+Audit the `/var/log/audit/audit.log` with a dedicated security personnel.
 
 You should not trust third party docker image, even the ones with open source repository.
 

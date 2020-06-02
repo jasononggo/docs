@@ -55,13 +55,13 @@ Reference: [Where to find SELinux permissions denials details](https://wiki.gent
 
 - Make sure everything works without SELinux, if confirmed, continue.
 
-``
+```
 # Set SELinux to permissive mode
 $ setenforce 0
 
 # After the test, set SELinux back to enforcing mode.
 $ setenforce 1
-``
+```
 
 - Search for the `AVC` logs
 

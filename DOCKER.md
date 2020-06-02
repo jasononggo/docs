@@ -48,6 +48,12 @@ $ getenforce
 $ sestatus
 ```
 
+## SELinux Best Practices
+
+Audit the `/var/log/audit/audit.log` with a dedicated security personnel.
+
+You should not trust third party docker image, even the ones with open source repository.
+
 ## (general) Fix container did not work properly.
 
 Reference: [Where to find SELinux permissions denials details](https://wiki.gentoo.org/wiki/SELinux/Tutorials/Where_to_find_SELinux_permission_denial_details)
@@ -83,12 +89,6 @@ $ ausearch -m AVC -ts recent | today
 ```
 
 - [Use `audit2allow` to allow access.](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/security-enhanced_linux/sect-security-enhanced_linux-fixing_problems-allowing_access_audit2allow)
-
-## SELinux Best Practices
-
-Audit the `/var/log/audit/audit.log` with a dedicated security personnel.
-
-You should not trust third party docker image, even the ones with open source repository.
 
 ## (optional) Fix for issue "docker container can write to the host's root directory"
 
@@ -181,8 +181,6 @@ modprobe ipt_state
 Reference: 
 - https://www.digitalocean.com/community/tutorials/how-to-configure-the-linux-firewall-for-docker-swarm-on-centos-7
 - https://gist.github.com/BretFisher/7233b7ecf14bc49eb47715bbeb2a2769
-
-### Steps
 
 - Enable iptables on each node
 

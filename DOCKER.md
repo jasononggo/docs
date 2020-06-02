@@ -124,6 +124,8 @@ Most distributions use the `iptables` firewall, which uses the `netfilter` hooks
 
 ## fix docker no route to host and docker ACME challenge failed
 
+Reference: fix [issue #2719](https://github.com/fail2ban/fail2ban/issues/2719)
+
 ```
 $ sudo systemctl stop firewalld
 $ sudo systemctl disable firewalld
@@ -137,12 +139,6 @@ $ sudo systemctl start iptables
 $ sudo systemctl enable iptables
 
 $ sudo systemctl restart docker
-```
-
-## fix [issue #2719](https://github.com/fail2ban/fail2ban/issues/2719)
-
-```
-$ sudo yum install iptables-services
 ```
 
 ## fix [issue #41048](https://github.com/moby/moby/issues/41048)

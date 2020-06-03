@@ -1,3 +1,9 @@
+# ASCII generator
+
+```
+$ python3 -c "import base64, os; salt = base64.b64encode(os.urandom(12)); salted = base64.b64encode(base64.b64decode(salt) + os.urandom(12),b'__').decode(); print(salted)"
+```
+
 # Docker Engine
 
 ## Install Docker Engine --nobest (3:18.09.1-3.el7) in CentOS 8

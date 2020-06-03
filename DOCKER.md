@@ -26,6 +26,7 @@ $ sudo systemctl enable docker
 ## Install Docker Compose 1.25.5
 
 Reference: https://docs.docker.com/compose/release-notes/
+
 ```
 $ sudo dnf install curl -y
 $ sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -41,18 +42,18 @@ Reference: - https://www.alibabacloud.com/blog/selinux-usage-in-alibaba-cloud-ec
 
 - Tell SELinux to relabel all of the files on that system with the correct SELinux contexts **on the next boot**. On large disks, this process can take a good amount of time.
 
-```
-$ su root
-$ touch /.autorelabel
-$ shutdown -r now
-```
+  ```
+  $ su root
+  $ touch /.autorelabel
+  $ shutdown -r now
+  ```
 
 - Once logged in, Verify that SELinux is activated
 
-```
-$ getenforce
-$ sestatus
-```
+  ```
+  $ getenforce
+  $ sestatus
+  ```
 
 ## SELinux Best Practices
 
@@ -66,33 +67,33 @@ Reference: [Where to find SELinux permissions denials details](https://wiki.gent
 
 - Disable SELinux to confirm whether SELinux is the culprit.
 
-```
-# Set SELinux to permissive mode
-$ setenforce 0
+  ```
+  # Set SELinux to permissive mode
+  $ setenforce 0
 
-# After the test, set SELinux back to enforcing mode.
-$ setenforce 1
-```
+  # After the test, set SELinux back to enforcing mode.
+  $ setenforce 1
+  ```
 
 - Search for hidden denials
 
-```
-# (optional) search SELinux policy dontaudit statements
-$ sesearch --dontaudit
+  ```
+  # (optional) search SELinux policy dontaudit statements
+  $ sesearch --dontaudit
 
-# disable `dontaudit` statements and rebuilds the SELinux policy. dev build only.
-$ semodule -DB
+  # disable `dontaudit` statements and rebuilds the SELinux policy. dev build only.
+  $ semodule -DB
 
-# rebuilds the SELinux policy and enable `dontaudit` statement after deploying the services.
-$ semodule -B
-```
+  # rebuilds the SELinux policy and enable `dontaudit` statement after deploying the services.
+  $ semodule -B
+  ```
 
 - Search for the `AVC` logs
 
-```
-# recent = 10 minutes ago
-$ ausearch -m AVC -ts recent | today
-```
+  ```
+  # recent = 10 minutes ago
+  $ ausearch -m AVC -ts recent | today
+  ```
 
 - [Use `audit2allow` to allow access.](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/security-enhanced_linux/sect-security-enhanced_linux-fixing_problems-allowing_access_audit2allow)
 
@@ -155,30 +156,30 @@ This issue happens if you run iptables in a container.
 
 - Error output
 
-```
-$ docker exec -ti proxy iptables -L
-modprobe: can't change directory to '/lib/modules': No such file or directory
-iptables v1.8.3 (legacy): can't initialize iptables table `filter': Table does not exist (do you need to insmod?)
-Perhaps iptables or your kernel needs to be upgraded.
-```
+  ```
+  $ docker exec -ti proxy iptables -L
+  modprobe: can't change directory to '/lib/modules': No such file or directory
+  iptables v1.8.3 (legacy): can't initialize iptables table `filter': Table does not exist (do you need to insmod?)
+  Perhaps iptables or your kernel needs to be upgraded.
+  ```
 
 - Check if the modules is loaded by running this command `$ lsmod | grep ip` in the host machine.
 
-```
-ip_tables
-ip_conntrack
-iptable_filter
-ipt_state
-```
+  ```
+  ip_tables
+  ip_conntrack
+  iptable_filter
+  ipt_state
+  ```
 
 - If not loaded, load the module by running this command `$ modprobe <module_name>` in the host machine.
 
-```
-modprobe ip_tables
-modprobe ip_conntrack
-modprobe iptable_filter
-modprobe ipt_state
-```
+  ```
+  modprobe ip_tables
+  modprobe ip_conntrack
+  modprobe iptable_filter
+  modprobe ipt_state
+  ```
 
 # Docker Swarm
 
@@ -190,48 +191,48 @@ Reference:
 
 - Enable iptables on each node
 
-```
-$ sudo systemctl stop firewalld
-$ sudo systemctl disable firewalld
-$ sudo systemctl mask firewalld
-$ sudo yum install iptables-services
-$ sudo systemctl start iptables
-$ sudo systemctl enable iptables
-```
+  ```
+  $ sudo systemctl stop firewalld
+  $ sudo systemctl disable firewalld
+  $ sudo systemctl mask firewalld
+  $ sudo yum install iptables-services
+  $ sudo systemctl start iptables
+  $ sudo systemctl enable iptables
+  ```
 
 - (caution) This first set of commands should be executed on the nodes that will serve as **Swarm managers**.
 
-```
-# Inbound to Swarm Managers
-# ---
-$ sudo iptables -I INPUT 5 -p tcp --dport 2377 -j ACCEPT
-$ sudo iptables -I INPUT 6 -p tcp --dport 7946 -j ACCEPT
-$ sudo iptables -I INPUT 7 -p udp --dport 7946 -j ACCEPT
-$ sudo iptables -I INPUT 8 -p udp --dport 4789 -j ACCEPT
+  ```
+  # Inbound to Swarm Managers
+  # ---
+  $ sudo iptables -I INPUT 5 -p tcp --dport 2377 -j ACCEPT
+  $ sudo iptables -I INPUT 6 -p tcp --dport 7946 -j ACCEPT
+  $ sudo iptables -I INPUT 7 -p udp --dport 7946 -j ACCEPT
+  $ sudo iptables -I INPUT 8 -p udp --dport 4789 -j ACCEPT
 
-# Those rules are runtime rules and will be lost if the system is rebooted.
-# To save the current runtime rules to a file so that they persist after a reboot, type:
-# ---
-$ sudo /usr/libexec/iptables/iptables.init save
+  # Those rules are runtime rules and will be lost if the system is rebooted.
+  # To save the current runtime rules to a file so that they persist after a reboot, type:
+  # ---
+  $ sudo /usr/libexec/iptables/iptables.init save
 
-$ systemctl restart docker
-```
+  $ systemctl restart docker
+  ```
 
 - (caution) This first set of commands should be executed on the nodes that will serve as **Swarm workers**.
 
-```
-# Inbound to Swarm workers
-# ---
-$ sudo iptables -I INPUT 5 -p tcp --dport 7946 -j ACCEPT
-$ sudo iptables -I INPUT 6 -p udp --dport 7946 -j ACCEPT
-$ sudo iptables -I INPUT 7 -p udp --dport 4789 -j ACCEPT
+  ```
+  # Inbound to Swarm workers
+  # ---
+  $ sudo iptables -I INPUT 5 -p tcp --dport 7946 -j ACCEPT
+  $ sudo iptables -I INPUT 6 -p udp --dport 7946 -j ACCEPT
+  $ sudo iptables -I INPUT 7 -p udp --dport 4789 -j ACCEPT
 
-$ sudo /usr/libexec/iptables/iptables.init save
-$ sudo systemctl restart docker
-```
+  $ sudo /usr/libexec/iptables/iptables.init save
+  $ sudo systemctl restart docker
+  ```
 
 - (optional) If you need to access the Docker daemon remotely, you need to enable the `tcp` Socket, use port `2376` for encrypted communication with the daemon.
 
-```
-$ sudo iptables -I INPUT 5 -p tcp --dport 2376 -j ACCEPT
-```
+  ```
+  $ sudo iptables -I INPUT 5 -p tcp --dport 2376 -j ACCEPT
+  ```

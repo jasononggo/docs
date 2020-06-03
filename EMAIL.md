@@ -17,6 +17,7 @@ Reference: [Set up DKIM to prevent email spoofing](https://support.google.com/a/
 ## Set up DMARC policy to manage suspicious emails
 
 ### How DMARC works
+
 DMARC helps email senders and receivers verify incoming messages by authenticating the sender's domain. **DMARC also defines the action to take on suspicious incoming messages.**
 
 Put into practice, if you relay email with DMARC policy reject 100% the recipient will not know.
@@ -68,10 +69,10 @@ Reference: [SMTP Relay: Route outgoing non-Gmail message through Google[(https:/
 From the technical point of view, you have 2 options to automate forwarding email:
 1. Use SMTP server to forward the email and end up with for example `FROM: catchall@companydomain.com` header on every forwaded email
 
-Business-wise, you should not use SMTP server to forward the email. Do note, most of non-technical user rely on `FROM:` header to identify who send the email and possibly query the email for future use. For example, automated forwading email with `FROM: catchall@companydomain.com` would prove harder to query mail sent by a specific individual.
+   Business-wise, you should not use SMTP server to forward the email. Do note, most of non-technical user rely on `FROM:` header to identify who send the email and possibly query the email for future use. For example, automated forwading email with `FROM: catchall@companydomain.com` would prove harder to query mail sent by a specific individual.
 
 2. Use SMTP relay service with the sender rewriting scheme to relay the email and end up with for example `FROM: sender@gmail.com via companydomain.com`
 
-> The sender rewriting scheme provides for recovering the original envelope address, so that if a bounce does arrive, it can be forwarded along the reverse path—with an empty envelope sender this time. While there are other workarounds, SRS is a fairly general one.
+   > The sender rewriting scheme provides for recovering the original envelope address, so that if a bounce does arrive, it can be forwarded along the reverse path—with an empty envelope sender this time. While there are other workarounds, SRS is a fairly general one.
 
-Do note, if you use G Suite SMTP relay service and relay email from domain you do not own (such as yahoo.com), In the Allowed senders section, select the users who are allowed to send messages through the SMTP relay service: Any addresses (not recommended). If you did not, your user with @companydomain.com email will not receive the relayed email except @companydomain.com / G Suite SMTP relay service will not relay the email.
+   Do note, if you use G Suite SMTP relay service and relay email from domain you do not own (such as yahoo.com), In the Allowed senders section, select the users who are allowed to send messages through the SMTP relay service: Any addresses (not recommended). If you did not, your user with @companydomain.com email will not receive the relayed email except @companydomain.com / G Suite SMTP relay service will not relay the email.

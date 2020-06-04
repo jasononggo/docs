@@ -175,10 +175,10 @@ This issue happens if you run iptables in a container.
 - If not loaded, load the module by running this command `$ modprobe <module_name>` in the host machine.
 
   ```
-  modprobe ip_tables
-  modprobe ip_conntrack
-  modprobe iptable_filter
-  modprobe ipt_state
+  $ modprobe ip_tables
+  $ modprobe ip_conntrack
+  $ modprobe iptable_filter
+  $ modprobe ipt_state
   ```
 
 # Docker Swarm

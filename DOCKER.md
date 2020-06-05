@@ -92,8 +92,8 @@ Reference: [Where to find SELinux permissions denials details](https://wiki.gent
 - [Use `audit2allow` to allow access.](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/security-enhanced_linux/sect-security-enhanced_linux-fixing_problems-allowing_access_audit2allow)
 
   Reference:
-  - [SELinux policy for Containers])https://www.projectatomic.io/blog/2016/03/selinux-and-docker-part-2/)
-  - [Create SELinux policy from `AVC` logs][https://stackoverflow.com/questions/52310241/how-to-modify-the-te-file-generated-by-audit2allow-and-recompile-it-into-pp-fi]
+  - [SELinux policy for Containers](https://www.projectatomic.io/blog/2016/03/selinux-and-docker-part-2/)
+  - [Create SELinux policy from `AVC` logs](https://stackoverflow.com/questions/52310241/how-to-modify-the-te-file-generated-by-audit2allow-and-recompile-it-into-pp-fi)
   - [Steps by steps to create SELinux policy from `AVC` logs](https://relativkreativ.at/articles/how-to-compile-a-selinux-policy-package)
 
   ```

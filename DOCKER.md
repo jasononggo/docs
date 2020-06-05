@@ -135,7 +135,7 @@ Use the `z` and `Z` flag to the mounted volume instead of `ro` or `rw` flag.
 
 > The z option indicates that the bind mount content is shared among multiple containers. The Z option indicates that the bind mount content is private and unshared. **This affects the file or directory on the host machine itself and can have consequences outside of the scope of Docker**.
 
-## Fix for "docker no route to host and docker ACME challenge failed"
+## Fix for issue "docker no route to host and docker ACME challenge failed"
 
 Reference: fix [issue #2719](https://github.com/fail2ban/fail2ban/issues/2719)
 
@@ -154,7 +154,7 @@ $ sudo systemctl enable iptables
 $ sudo systemctl restart docker
 ```
 
-## Fix [issue #41048](https://github.com/moby/moby/issues/41048)
+## Fix for issue [issue #41048](https://github.com/moby/moby/issues/41048)
 
 Reference: https://www.linuxquestions.org/questions/linux-networking-3/iptables-v1-3-8-can%27t-initialize-iptables-table-%60filter%27-577212/
 
@@ -266,6 +266,8 @@ This issue happens if you run iptables in a container.
 Reference: 
 - https://www.digitalocean.com/community/tutorials/how-to-configure-the-linux-firewall-for-docker-swarm-on-centos-7
 - https://gist.github.com/BretFisher/7233b7ecf14bc49eb47715bbeb2a2769
+
+Most distributions use the `iptables` firewall, which uses the `netfilter` hooks to enforce firewall rules. CentOS 7 comes with an alternative service called `firewalld` which fulfills this same purpose.
 
 - Enable iptables on each node
 

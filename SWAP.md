@@ -6,25 +6,31 @@ Swap is a space on a disk that is used when the amount of physical RAM memory is
 
 ## Create the swap file
 
-Create a file that will be used for swap:
+- Create a file that will be used for swap:
 
-`$ sudo fallocate -l [size in bytes or e.g 2G] /swapfile`
+  `$ sudo fallocate -l [size in bytes or e.g 2G] /swapfile`
 
-Set to only root user should be able to read and write the swap file.
+- Set to only root user should be able to read and write the swap file.
 
-`$ sudo chmod 600 /swapfile`
+  `$ sudo chmod 600 /swapfile`
 
-Use the `mkswap` utility to set up the file as Linux swap area:
+- Use the `mkswap` utility to set up the file as Linux swap area:
 
-`$ sudo mkswap /swapfile`
+  `$ sudo mkswap /swapfile`
 
-Enable the swap with the following command:
+- Enable the swap with the following command:
 
-`$ sudo swapon /swapfile`
+  `$ sudo swapon /swapfile`
+  
+  - [error `swapon: /swapfile: swapon failed: Invalid argument`](https://unix.stackexchange.com/questions/294600/i-cant-enable-swap-space-on-centos-7)
+  
+    Solution: use `dd` instead of `fallcoate`
+    
+    `sudo dd if=/dev/zero of=/swapfile count=[size in MiB e.g 2048] bs=1MiB`
 
-To make the change permanent open the `/etc/fstab` file and append the following line:
+- To make the change permanent open the `/etc/fstab` file and append the following line:
 
-`/swapfile swap swap defaults 0 0`
+  `/swapfile swap swap defaults 0 0`
 
 ## Adjust the swappiness value
 

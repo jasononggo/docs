@@ -22,9 +22,9 @@ Swap is a space on a disk that is used when the amount of physical RAM memory is
 
   `$ sudo swapon /swapfile`
   
-  - [error `swapon: /swapfile: swapon failed: Invalid argument`](https://unix.stackexchange.com/questions/294600/i-cant-enable-swap-space-on-centos-7)
+  - if encounter an error [`swapon: /swapfile: swapon failed: Invalid argument`](https://unix.stackexchange.com/questions/294600/i-cant-enable-swap-space-on-centos-7)
   
-    Solution: use `dd` instead of `fallcoate`
+    Use `dd` instead of `fallcoate`
     
     `sudo dd if=/dev/zero of=/swapfile count=[size in MiB e.g 2048] bs=1MiB`
 

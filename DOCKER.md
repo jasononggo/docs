@@ -1,9 +1,3 @@
-# ASCII generator
-
-```
-$ python3 -c "import base64, os; salt = base64.b64encode(os.urandom(12)); salted = base64.b64encode(base64.b64decode(salt) + os.urandom(12),b'__').decode(); print(salted)"
-```
-
 # Docker Engine
 
 ## Install Docker Engine --nobest (3:18.09.1-3.el7) in CentOS 8
@@ -34,7 +28,7 @@ $ sudo chmod +x /usr/local/bin/docker-compose
 $ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 ```
 
-# (optional) Enable SELinux
+# Enable SELinux
 
 Reference: - https://www.alibabacloud.com/blog/selinux-usage-in-alibaba-cloud-ecs_594556
 
@@ -97,7 +91,26 @@ Reference: [Where to find SELinux permissions denials details](https://wiki.gent
 
 - [Use `audit2allow` to allow access.](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/security-enhanced_linux/sect-security-enhanced_linux-fixing_problems-allowing_access_audit2allow)
 
-## (optional) Fix for issue "docker container can write to the host's root directory"
+  Reference:
+  - [SELinux policy for Containers])https://www.projectatomic.io/blog/2016/03/selinux-and-docker-part-2/)
+  - [Create SELinux policy from `AVC` logs][https://stackoverflow.com/questions/52310241/how-to-modify-the-te-file-generated-by-audit2allow-and-recompile-it-into-pp-fi]
+  - [Steps by steps to create SELinux policy from `AVC` logs](https://relativkreativ.at/articles/how-to-compile-a-selinux-policy-package)
+
+  ```
+  $ ausearch -m AVC -ts recent
+  $ ausearch -m AVC -ts recent | audit2allow -M <policy_name>
+  $ semodule -i <policy_name>.pp
+  ```
+
+- Enable iptables (legacy), avoid iptables (nf_table) and disable firewalld.
+
+  Reference:
+  - https://www.digitalocean.com/community/tutorials/how-to-migrate-from-firewalld-to-iptables-on-centos-7
+  - https://www.tecmint.com/start-stop-disable-enable-firewalld-iptables-firewall/
+
+  Most distributions use the `iptables` firewall, which uses the `netfilter` hooks to enforce firewall rules. CentOS 7 comes with an alternative service called `firewalld` which fulfills this same purpose.
+
+## Fix for issue "docker container can write to the host's root directory"
 
 Reference: https://dev.to/mkdev/hardening-docker-with-selinux-on-centos-8-4d6e
 
@@ -121,15 +134,7 @@ Use the `z` and `Z` flag to the mounted volume instead of `ro` or `rw` flag.
 
 > The z option indicates that the bind mount content is shared among multiple containers. The Z option indicates that the bind mount content is private and unshared. **This affects the file or directory on the host machine itself and can have consequences outside of the scope of Docker**.
 
-# CentOS's firewalld service fix
-
-Reference:
-- https://www.digitalocean.com/community/tutorials/how-to-migrate-from-firewalld-to-iptables-on-centos-7
-- https://www.tecmint.com/start-stop-disable-enable-firewalld-iptables-firewall/
-
-Most distributions use the `iptables` firewall, which uses the `netfilter` hooks to enforce firewall rules. CentOS 7 comes with an alternative service called `firewalld` which fulfills this same purpose.
-
-## fix docker no route to host and docker ACME challenge failed
+## Fix for "docker no route to host and docker ACME challenge failed"
 
 Reference: fix [issue #2719](https://github.com/fail2ban/fail2ban/issues/2719)
 
@@ -148,7 +153,7 @@ $ sudo systemctl enable iptables
 $ sudo systemctl restart docker
 ```
 
-## fix [issue #41048](https://github.com/moby/moby/issues/41048)
+## Fix [issue #41048](https://github.com/moby/moby/issues/41048)
 
 Reference: https://www.linuxquestions.org/questions/linux-networking-3/iptables-v1-3-8-can%27t-initialize-iptables-table-%60filter%27-577212/
 
@@ -180,6 +185,78 @@ This issue happens if you run iptables in a container.
   $ modprobe iptable_filter
   $ modprobe ipt_state
   ```
+
+# Fix for container can't bind mounts to /var/log/secure.
+  
+  This is a steps by steps on how to create the SELinux policy. Use it to troubleshoot SELinux issue.
+  
+  - Summary
+  
+    You need to allow `container_t` to `read` and `open` to a file labeled with `var_log_t` type. 
+
+    This is the generated `sample.te` file
+
+    ```
+    module sample 1.0;
+
+    require {
+            type var_log_t;
+            type container_t;
+            class file { open read };
+    }
+
+    #============= container_t ==============
+    allow container_t var_log_t:file open;
+
+    #!!!! This avc is allowed in the current policy
+    allow container_t var_log_t:file read;
+    ```
+
+  - Build the policy package file (.pp)
+
+    In order to build a policy package from a type enforcement file, we first have to convert it into a policy module. This is done with the checkmodule command:
+
+    ```
+    $ checkmodule -M -m -o sample.mod sample.te
+    $ semodule_package -o sample.pp -m sample.mod
+    $ semodule -i sample.pp
+    ```
+  
+  - Bind mounts to /var/log/secure via `docker-compose` or `docker run`
+  
+    docker-compose.yml
+  
+    ```
+    version: "3"
+
+    services:
+      fail2ban:
+        image: crazymax/fail2ban
+        volumes:
+          - /var/log/secure:/var/log/secure:ro
+    ```
+
+    docker-compose
+
+    ```
+    $ docker-compose up -d
+    $ docker exec -ti fail2ban cat /var/log/secure
+    ```
+
+    docker run
+
+    ```
+    $ docker run -it --rm -v /var/log/secure:/var/log/secure fail2ban cat /var/log/secure
+    ```
+  
+  - Repeat this step until container can `$ cat /var/log/secure`
+  
+    Make sure there is no unrelated AVC denial by running this command `$ ausearch -m AVC -ts recent`. If so, proceed.
+    
+    ```
+    $ ausearch -m AVC -ts recent | audit2allow -M <policy_name>
+    $ semodule -i <policy_name>.pp
+    ```
 
 # Docker Swarm
 
@@ -235,4 +312,10 @@ Reference:
 
   ```
   $ sudo iptables -I INPUT 5 -p tcp --dport 2376 -j ACCEPT
+  ```
+  
+## ASCII generator
+
+  ```
+  $ python3 -c "import base64, os; salt = base64.b64encode(os.urandom(12)); salted = base64.b64encode(base64.b64decode(salt) + os.urandom(12),b'__').decode(); print(salted)"
   ```

@@ -96,8 +96,9 @@ Reference: [Where to find SELinux permissions denials details](https://wiki.gent
   - [Create SELinux policy from `AVC` logs](https://stackoverflow.com/questions/52310241/how-to-modify-the-te-file-generated-by-audit2allow-and-recompile-it-into-pp-fi)
   - [Steps by steps to create SELinux policy from `AVC` logs](https://relativkreativ.at/articles/how-to-compile-a-selinux-policy-package)
 
+  Make sure there is no unrelated AVC denial by running this command `$ ausearch -m AVC -ts recent`. If so, proceed.
+
   ```
-  $ ausearch -m AVC -ts recent
   $ ausearch -m AVC -ts recent | audit2allow -M <policy_name>
   $ semodule -i <policy_name>.pp
   ```

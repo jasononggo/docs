@@ -9,10 +9,10 @@ Reference: https://docs.sucuri.net/warnings/hardening/
   }
   ```
 
-- (optional) Set HTTP header session_id cookie with HttpOnly and Secure flag by adding this code to the `/etc/nginx/nginx.conf`file
+- Set HTTP header session_id cookie with HttpOnly and Secure flag by adding this code to the `/etc/nginx/nginx.conf`file
 
   ```
-  proxy_cookie_path / "/; HttpOnly; Secure"; # enable at your own risk, may break certain apps
+  proxy_cookie_path / "/; HttpOnly; Secure; SameSite=strict"; # enable at your own risk, may break certain apps
   ```
 
 ## SSL and TLS Deployment Best Practices

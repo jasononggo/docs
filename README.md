@@ -77,17 +77,28 @@ Reference: ["Premature Optimization" and paranoid security measures](https://sta
   $ sudo systemctl reload sshd
   ```
   
-- Set the sshd_config
+- Secure the SSH connections
 
-  ```
-  Ciphers aes256-ctr,aes192-ctr,aes128-ctr
+  Reference: https://unix.stackexchange.com/questions/333728/ssh-how-to-disable-weak-ciphers
 
-  HostKeyAlgorithms ssh-ed25519,ecdsa-sha2-nistp521,ecdsa-sha2-nistp384,ecdsa-sha2-nistp256,ssh-rsa
+  - To disable RC4 and use secure ciphers on SSH server. In `/etc/ssh/sshd_config` set
+  
+    ```
+    Ciphers aes256-ctr,aes192-ctr,aes128-ctr
 
-  KexAlgorithms ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,curve25519-sha256@libssh.org
+    HostKeyAlgorithms ssh-ed25519,ecdsa-sha2-nistp521,ecdsa-sha2-nistp384,ecdsa-sha2-nistp256,ssh-rsa
 
-  MACs hmac-sha2-512,hmac-sha2-256
-  ```
+    KexAlgorithms ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,curve25519-sha256@libssh.org
+
+    MACs hmac-sha2-512,hmac-sha2-256
+    ```
+  
+  - Instruct your SSH client to negotiate only secure ciphers with remote servers. In `/etc/ssh/ssh_config` set:
+  
+    ```
+    Ciphers aes256-ctr,aes192-ctr,aes128-ctr
+    MACs hmac-sha2-512,hmac-sha2-256
+    ```
 
 - Set the timezone to UTC
 

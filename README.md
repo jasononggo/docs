@@ -76,6 +76,18 @@ Reference: ["Premature Optimization" and paranoid security measures](https://sta
   $ sudo sed -i '/^UsePAM/s/yes/no/' /etc/ssh/sshd_config
   $ sudo systemctl reload sshd
   ```
+  
+- Set the sshd_config
+
+  ```
+  Ciphers aes256-ctr,aes192-ctr,aes128-ctr
+
+  HostKeyAlgorithms ssh-ed25519,ecdsa-sha2-nistp521,ecdsa-sha2-nistp384,ecdsa-sha2-nistp256,ssh-rsa
+
+  KexAlgorithms ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256,curve25519-sha256@libssh.org
+
+  MACs hmac-sha2-512,hmac-sha2-256
+  ```
 
 - Set the timezone to UTC
 

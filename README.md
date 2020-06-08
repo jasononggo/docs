@@ -14,6 +14,48 @@ Reference: https://medium.com/@steveamaza/how-to-write-a-proper-git-commit-messa
 > How does this commit address the issue?
 > What effects does this change have?
 
+## Signing commits with GPG
+
+Reference:
+- https://help.github.com/en/github/authenticating-to-github/generating-a-new-gpg-key
+- https://help.github.com/en/github/authenticating-to-github/signing-commits
+
+Using GPG or S/MIME, you can sign tags and commits locally. These tags or commits are marked as verified on GitHub so other people can trust that the changes come from a trusted source.
+
+- Generate the GPG key
+
+  ```
+  $ gpg --full-generate-key
+  ```
+
+- Export the GPG public key and upload it to GitHub
+
+  ```
+  $ gpg --armor --export <keyid>
+  ```
+  
+- Configure the GitHub Dekstop
+
+  ```
+  $ gpg --list-secret-keys --keyid-format LONG
+  $ git config --global user.signingkey <keyid>
+  
+  # To sign all commits by default in any local repository on your computer, run
+  $ git config --global commit.gpgsign true
+  ```
+
+### Fix for issue "gpg: skipped "keyid": No secret key" on Windows 10
+
+```
+$ git commit -S -m "first commit"
+gpg: skipped "keyid": No secret key
+gpg: signing failed: No secret key
+error: gpg failed to sign the data
+fatal: failed to write commit object
+```
+
+Run this `$ git config --global gpg.program "C:\Program Files (x86)\GnuPG\bin\gpg.exe"`
+
 ## A template to make good README.md
 
 Reference:

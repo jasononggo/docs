@@ -187,7 +187,7 @@ This issue happens if you run iptables in a container.
   $ modprobe ipt_state
   ```
 
-# Fix for container can't bind mounts to /var/log/secure.
+## Fix for container can't bind mounts to /var/log/secure.
   
   This is a steps by steps on how to create the SELinux policy. Use it to troubleshoot SELinux issue.
   
@@ -257,6 +257,64 @@ This issue happens if you run iptables in a container.
     ```
     $ ausearch -m AVC -ts recent | audit2allow -M <policy_name>
     $ semodule -i <policy_name>.pp
+    ```
+
+# iptables
+
+Reference: [Docker and iptables](https://serverfault.com/questions/704643/steps-for-limiting-outside-connections-to-docker-container-with-iptables)
+
+To avoid your rules being clobbered by `Docker`, use the `DOCKER-USER` chain.
+
+> Conntrack supersedes state , but in modern kernels there is now no difference between the two. State is currently aliased and translated to conntrack in iptables if the kernel has it, so the syntax -m state --state is actually translated into -m conntrack --ctstate and handled by the same module.
+
+You can use `-m conntrack -ctstate` instead of `-m state --state` if you want.
+
+  - Block the `INPUT` chain and the `OUPUT` chain connection.
+  
+    ```
+    # CHAIN INPUT
+    $ sudo iptables -I INPUT 1 -m state --state RELATED,ESTABLISHED -j ACCEPT
+    $ sudo iptables -I INPUT 2 -m state --state NEW -p tcp --dport 22 -j ACCEPT
+    $ sudo iptables -I INPUT 3 --reject-with icmp-host-prohibited -j REJECT
+
+    # CHAIN OUTPUT
+    $ sudo iptables -I OUTPUT 1 -m state --state RELATED,ESTABLISHED -j ACCEPT
+    
+      # curl https
+      $ sudo iptables -I OUTPUT 2 -p tcp --dport 443 -m state --state NEW -j ACCEPT
+      
+      # dns lookup
+      $ sudo iptables -I OUTPUT 3 -p udp --dport 53 -m state --state NEW -j ACCEPT
+      
+    $ sudo iptables -I OUTPUT 4 --reject-with icmp-host-prohibited -j REJECT
+    ```
+
+    Output:
+    ```
+    $ sudo iptables -L INPUT --line-numbers
+    Chain INPUT (policy ACCEPT)
+    num  target     prot opt source               destination
+    1    ACCEPT     all  --  anywhere             anywhere             state RELATED,ESTABLISHED
+    2    ACCEPT     tcp  --  anywhere             anywhere             state NEW tcp dpt:ssh
+    3    REJECT     all  --  anywhere             anywhere             reject-with icmp-host-prohibited
+
+    $ sudo iptables -L OUTPUT --line-numbers
+    Chain OUTPUT (policy ACCEPT)
+    num  target     prot opt source               destination
+    1    ACCEPT     all  --  anywhere             anywhere             state RELATED,ESTABLISHED
+    2    ACCEPT     udp  --  anywhere             anywhere             udp dpt:domain state NEW
+    3    ACCEPT     tcp  --  anywhere             anywhere             tcp dpt:https state NEW
+    4    REJECT     all  --  anywhere             anywhere             reject-with icmp-host-prohibited
+    ```
+  
+  - Allow incoming SSH from specific IP address or subnet
+  
+    Reference: [iptables' essentials: common firewall rules and commands](https://www.digitalocean.com/community/tutorials/iptables-essentials-common-firewall-rules-and-commands#:~:text=Allow%20Incoming%20SSH%20from%20Specific,%2Dp%20tcp%20%2Ds%2015.15.)
+  
+    To allow incoming SSH connections from a specific IP address or subnet, specify the source. For example, if you want to allow the entire 15.15.15.0/24 subnet, run these commands:
+  
+    ```
+    $ sudo iptables -I INPUT 2 -p tcp -s 15.15.15.0/24 --dport 22 -m state --state NEW -j ACCEPT
     ```
 
 # Docker Swarm

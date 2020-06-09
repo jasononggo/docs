@@ -267,7 +267,7 @@ To avoid your rules being clobbered by `Docker`, use the `DOCKER-USER` chain.
 
 > Conntrack supersedes state , but in modern kernels there is now no difference between the two. State is currently aliased and translated to conntrack in iptables if the kernel has it, so the syntax -m state --state is actually translated into -m conntrack --ctstate and handled by the same module.
 
-You can use `-m conntrack -ctstate` instead of `-m state --state` if you want.
+You can use `-m conntrack --ctstate` instead of `-m state --state` if you want.
 
   - Block the `INPUT` chain and the `OUPUT` chain connection.
   

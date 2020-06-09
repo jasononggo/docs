@@ -284,7 +284,7 @@ You can use `-m conntrack --ctstate` instead of `-m state --state` if you want.
     $ sudo iptables -I OUTPUT 1 -m state --state RELATED,ESTABLISHED -j ACCEPT
     
     # curl https
-    $ sudo iptables -I OUTPUT 2 -p tcp --dport 443 -m state --state NEW -j ACCEPT
+    $ sudo iptables -I OUTPUT 2 -p tcp -d example.com --dport 443 -m state --state NEW -j ACCEPT
     
     # dns lookup
     $ sudo iptables -I OUTPUT 3 -p udp --dport 53 -m state --state NEW -j ACCEPT

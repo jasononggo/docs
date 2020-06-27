@@ -2,8 +2,8 @@
 
 ```
 // if you did not add the update param directly, it will only loop once.
-for (first = 0; first < 0; ) {
-    for (second = 0; second < 0; second++) {
+for (first = 0; first < 2; ) {
+    for (second = 0; second < 2; second++) {
         // update param for the `first` for statement here, if you intend to leverage the loop (first -> second -> second -> ... -> first -> second ...)
         first++;
     }

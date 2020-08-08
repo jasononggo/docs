@@ -320,6 +320,14 @@ You can use `-m conntrack --ctstate` instead of `-m state --state` if you want.
     $ sudo iptables -I INPUT 2 -p tcp -s 15.15.15.0/24 --dport 22 -m state --state NEW -j ACCEPT
     ```
 
+  - [Persistent iptables rules](https://www.thegeekdiary.com/centos-rhel-how-to-make-iptable-rules-persist-across-reboots/)
+  
+    ```
+    $ service iptables save
+    $ service iptables restart
+    $ chkconfig iptables on
+    ```
+
 # Docker Swarm
 
 ## Disable firewalld and enable iptables
